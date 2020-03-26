@@ -78,6 +78,7 @@ message MetricWithMetadatas {
     GAUGE_WITH_METADATAS = 3;
     FORWARDED_METRIC_WITH_METADATA = 4;
     TIMED_METRIC_WITH_METADATA = 5;
+    TIMED_METRIC_WITH_STORAGE_POLICY = 6;
   }
   Type type = 1;
   CounterWithMetadatas counter_with_metadatas = 2;
@@ -85,4 +86,5 @@ message MetricWithMetadatas {
   GaugeWithMetadatas gauge_with_metadatas = 4;
   ForwardedMetricWithMetadata forwarded_metric_with_metadata = 5;
   TimedMetricWithMetadata timed_metric_with_metadata = 6;
+  TimedMetricWithStoragePolicy timed_metric_with_storage_policy = 7;
 }
