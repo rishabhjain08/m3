@@ -62,6 +62,7 @@ type handlerMetrics struct {
 	addUntimedErrors         tally.Counter
 	addTimedErrors           tally.Counter
 	addForwardedErrors       tally.Counter
+	addPassthroughErrors     tally.Counter
 	unknownErrorTypeErrors   tally.Counter
 	decodeErrors             tally.Counter
 	errLogRateLimited        tally.Counter
@@ -73,6 +74,7 @@ func newHandlerMetrics(scope tally.Scope) handlerMetrics {
 		addUntimedErrors:         scope.Counter("add-untimed-errors"),
 		addTimedErrors:           scope.Counter("add-timed-errors"),
 		addForwardedErrors:       scope.Counter("add-forwarded-errors"),
+		addPassthroughErrors:     scope.Counter("add-passthrough-errors"),
 		unknownErrorTypeErrors:   scope.Counter("unknown-error-type-errors"),
 		decodeErrors:             scope.Counter("decode-errors"),
 		errLogRateLimited:        scope.Counter("error-log-rate-limited"),
@@ -204,6 +206,15 @@ func (s *handler) Handle(conn net.Conn) {
 		case addTimedError:
 			s.metrics.addTimedErrors.Inc(1)
 			s.log.Error("error adding timed metric",
+				zap.String("remoteAddress", remoteAddress),
+				zap.Stringer("id", timedMetric.ID),
+				zap.Time("timestamp", time.Unix(0, timedMetric.TimeNanos)),
+				zap.Float64("value", timedMetric.Value),
+				zap.Error(err),
+			)
+		case addPassthroughError:
+			s.metrics.addPassthroughErrors.Inc(1)
+			s.log.Error("error adding passthrough metric",
 				zap.String("remoteAddress", remoteAddress),
 				zap.Stringer("id", timedMetric.ID),
 				zap.Time("timestamp", time.Unix(0, timedMetric.TimeNanos)),
