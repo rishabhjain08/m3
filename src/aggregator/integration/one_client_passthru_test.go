@@ -29,6 +29,7 @@ import (
 	"time"
 
 	"github.com/m3db/m3/src/cluster/placement"
+	"github.com/m3db/m3/src/metrics/metric"
 	"github.com/m3db/m3/src/metrics/metric/aggregated"
 	"github.com/m3db/m3/src/metrics/policy"
 	"github.com/m3db/m3/src/x/clock"
@@ -102,7 +103,7 @@ func TestOneClientPassthroughMetrics(t *testing.T) {
 	metadataFn := func(idx int) metadataUnion {
 		return metadataUnion{
 			mType:               passthroughMetadataType,
-			passthroughMetadata: policy.NewStoragePolicy(2*time.Second, xtime.Second, idx*time.Hour),
+			passthroughMetadata: policy.NewStoragePolicy(2*time.Second, xtime.Second, time.Hour),
 		}
 	}
 	dataset := mustGenerateTestDataset(t, datasetGenOpts{
@@ -111,7 +112,7 @@ func TestOneClientPassthroughMetrics(t *testing.T) {
 		interval:     interval,
 		ids:          ids,
 		category:     passthroughMetric,
-		typeFn:       constantMetricTypeFnFactory(GaugeType),
+		typeFn:       constantMetricTypeFnFactory(metric.GaugeType),
 		valueGenOpts: defaultValueGenOpts,
 		metadataFn:   metadataFn,
 	})
@@ -155,6 +156,9 @@ func computeExpectedPassthroughResults(
 				Metric:        metricWithMetadata.metric.passthrough,
 				StoragePolicy: metricWithMetadata.metadata.passthroughMetadata,
 			}
+
+			// The capturingWriter writes ChunkedMetricWithStoragePolicy which has no metric type defined.
+			expectedPassthrough.Metric.Type = metric.UnknownType
 			expected = append(expected, expectedPassthrough)
 		}
 	}
