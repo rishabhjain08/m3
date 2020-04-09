@@ -318,6 +318,8 @@ aggregator:
                 flushInterval: 1s
                 writeBufferSize: 16384
                 readBufferSize: 256
+  passthrough:
+    enabled: true
   forwarding:
     maxSingleDelay: 5s
   entryTTL: 6h
