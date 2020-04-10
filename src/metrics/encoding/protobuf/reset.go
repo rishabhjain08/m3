@@ -48,6 +48,7 @@ func resetMetricWithMetadatasProto(pb *metricpb.MetricWithMetadatas) {
 	resetGaugeWithMetadatasProto(pb.GaugeWithMetadatas)
 	resetForwardedMetricWithMetadataProto(pb.ForwardedMetricWithMetadata)
 	resetTimedMetricWithMetadataProto(pb.TimedMetricWithMetadata)
+	resetTimedMetricWithStoragePolicyProto(pb.TimedMetricWithStoragePolicy)
 }
 
 func resetCounterWithMetadatasProto(pb *metricpb.CounterWithMetadatas) {

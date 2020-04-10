@@ -317,6 +317,10 @@ func (agg *aggregator) passWriter() (writer.Writer, error) {
 		return nil, errAggregatorNotOpenOrClosed
 	}
 
+	if agg.electionManager.ElectionState() == FollowerState {
+		return writer.NewBlackholeWriter(), nil
+	}
+
 	return agg.passthroughWriter, nil
 }
 
